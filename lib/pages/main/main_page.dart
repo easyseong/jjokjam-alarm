@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vibration/vibration.dart';
 
@@ -9,15 +9,14 @@ class MainPage extends ConsumerWidget {
   const MainPage({super.key});
 
   void _showCompletionDialog(BuildContext context) {
-    showDialog(
+    showCupertinoDialog(
       context: context,
-      barrierDismissible: false,
       builder:
-          (context) => AlertDialog(
+          (context) => CupertinoAlertDialog(
             title: const Text('알림'),
             content: const Text('일어날 시간이에요!'),
             actions: [
-              TextButton(
+              CupertinoDialogAction(
                 onPressed: () {
                   Vibration.cancel();
                   Navigator.of(context).pop();
@@ -45,21 +44,24 @@ class MainPage extends ConsumerWidget {
     final formatted = timerState.remaining.toString().substring(2, 7);
     final alarmTime = timerState.alarmTime;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
+    return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.black,
+      child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               '${TimerNotifier.initialDuration.inMinutes}분',
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(
+                fontSize: 20,
+                color: CupertinoColors.white,
+              ),
             ),
             const SizedBox(height: 20),
             CustomPaint(
               painter: TimerPainter(
-                backgroundColor: Colors.grey.shade800,
-                progressColor: Colors.orange,
+                backgroundColor: CupertinoColors.systemGrey,
+                progressColor: CupertinoColors.activeOrange,
                 progress: timerState.progress,
               ),
               child: SizedBox(
@@ -73,15 +75,15 @@ class MainPage extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Icon(
-                            Icons.notifications_none,
-                            color: Colors.white70,
+                            CupertinoIcons.bell_fill,
+                            color: CupertinoColors.systemGrey,
                           ),
                           const SizedBox(width: 6),
                           Text(
                             '${alarmTime.hour.toString().padLeft(2, '0')}:${alarmTime.minute.toString().padLeft(2, '0')}',
                             style: const TextStyle(
                               fontSize: 16,
-                              color: Colors.white70,
+                              color: CupertinoColors.systemGrey,
                             ),
                           ),
                         ],
@@ -92,7 +94,7 @@ class MainPage extends ConsumerWidget {
                         style: const TextStyle(
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: CupertinoColors.white,
                         ),
                       ),
                     ],
@@ -106,28 +108,24 @@ class MainPage extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
+                  CupertinoButton(
+                    padding: const EdgeInsets.all(24),
+                    color: CupertinoColors.systemGrey,
+                    borderRadius: BorderRadius.circular(100),
                     onPressed: () => notifier.cancel(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[800],
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(24),
-                    ),
                     child: const Text(
                       '취소',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: CupertinoColors.white),
                     ),
                   ),
-                  ElevatedButton(
+                  CupertinoButton(
+                    padding: const EdgeInsets.all(24),
+                    color: CupertinoColors.activeOrange,
+                    borderRadius: BorderRadius.circular(100),
                     onPressed: () => notifier.toggle(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange[700],
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(24),
-                    ),
                     child: Text(
                       timerState.isRunning ? '일시 정지' : '재개',
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: CupertinoColors.white),
                     ),
                   ),
                 ],

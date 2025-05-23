@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'pages/splash/splash_page.dart';
@@ -12,9 +12,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       title: 'Subway Alarm App',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: const CupertinoThemeData(
+        primaryColor: CupertinoColors.activeBlue,
+        brightness: Brightness.light,
+      ),
       home: const SplashPage(),
     );
   }

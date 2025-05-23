@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
 import '../pages/main/main_page.dart';
+import '../pages/settings/settings_page.dart';
 import '../pages/subway/select_line_page.dart';
 import '../pages/subway/subway_line_page.dart';
-import '../pages/settings/settings_page.dart';
 
 class RootScaffold extends StatefulWidget {
   const RootScaffold({super.key});
@@ -12,45 +13,61 @@ class RootScaffold extends StatefulWidget {
 }
 
 class _RootScaffoldState extends State<RootScaffold> {
-  int _selectedTabIndex = 0;
-  Widget _currentPage = const MainPage();
+  int _selectedTabIndex = 0; // 현재 선택된 하단 탭 인덱스
+  late Widget _subwayTab; // 보여줄 페이지
 
-  void _onLineSelected(String line) {
-    setState(() {
-      _currentPage = SubwayLinePage(line: line);
-    });
+  @override
+  void initState() {
+    // 위젯 처음 생성시 호출
+    super.initState();
+    _subwayTab = SelectLinePage(onLineSelected: _onLineSelected);
   }
 
-  void _onBottomNavTap(int index) {
+  // 지하철 노선을 선택하면 호출 (_subwayTab을 해당 노선의 페이지로 교체하고 UI를 다시 렌더링)
+  void _onLineSelected(String line) {
     setState(() {
-      _selectedTabIndex = index;
-      switch (index) {
-        case 0:
-          _currentPage = const MainPage();
-          break;
-        case 1:
-          _currentPage = SelectLinePage(onLineSelected: _onLineSelected);
-          break;
-        case 2:
-          _currentPage = const SettingsPage();
-          break;
-      }
+      _subwayTab = SubwayLinePage(line: line);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _currentPage,
-      bottomNavigationBar: BottomNavigationBar(
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        backgroundColor: CupertinoColors.systemBackground,
         currentIndex: _selectedTabIndex,
-        onTap: _onBottomNavTap,
+        onTap: (index) {
+          setState(() {
+            _selectedTabIndex = index;
+          });
+        },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.access_time), label: '시계'),
-          BottomNavigationBarItem(icon: Icon(Icons.alarm), label: '알람'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.timer),
+            label: '타이머',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.train_style_one),
+            label: '알람',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.settings),
+            label: '설정',
+          ),
         ],
       ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return const MainPage();
+          case 1:
+            return _subwayTab;
+          case 2:
+            return const SettingsPage();
+          default:
+            return const MainPage();
+        }
+      },
     );
   }
 }
